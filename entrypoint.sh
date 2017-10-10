@@ -15,12 +15,13 @@ function usage() {
 }
 
 function stamp() {
-	date '+%Y-%m-%d %H:%M:%S'
+	date "+$TIME_FORMAT"
 }
 
 sleep_time=${1:-5}
 log_message=${@:2}
 LOG_FILE=${LOG_FILE:-/var/log/noisy.log}
+TIME_FORMAT=${TIME_FORMAT:-%Y-%m-%dT%H:%M:%S.%NZ}
 
 if [[ -z "$log_message" ]]; then
 	log_message='{"time": "{{time}}", "key": "value", "number": 123.456, "bool": true}'
