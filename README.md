@@ -4,11 +4,11 @@ Noisy prints out a lot
 ## Print stuff
 
 ```bash
-docker run johnstarich/noisy
+docker run -it johnstarich/noisy
 # or
-docker run johnstarich/noisy 3.14
+docker run -it johnstarich/noisy 3.14
 # or
-docker run johnstarich/noisy 42 '{{time}} Hello world!'
+docker run -it johnstarich/noisy 42 '{{time}} Hello world!'
 # where {{time}} is replaced with the current time stamp
 ```
 
