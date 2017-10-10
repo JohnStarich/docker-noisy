@@ -11,7 +11,7 @@ function error() {
 function usage() {
 	error "Usage: noisy SLEEP_TIME [LOG_MESSAGE]"
 	error '  SLEEP_TIME: Number of seconds to wait between logs. Default is 5 seconds.'
-	error '  LOG_MESSAGE: The message to print every SLEEP_TIME seconds. Use `{{time}}` in the string for current time. Default is a JSON log.'
+	error '  LOG_MESSAGE: Optional. The message to print every SLEEP_TIME seconds. Use `{{time}}` in the string for current time. Default is a JSON log.'
 }
 
 function stamp() {
