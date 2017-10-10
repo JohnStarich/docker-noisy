@@ -20,6 +20,10 @@ function stamp() {
 
 sleep_time=${1:-5}
 log_message=${@:2}
+LOG_FILE=${LOG_FILE:-/var/log/noisy.log}
+
+# Clean up old log file to save on disk space a little
+rm -f "$LOG_FILE"
 
 if [[ -z "$log_message" ]]; then
 	log_message='{"time": "{{time}}", "key": "value", "number": 123.456, "bool": true}'
@@ -38,6 +42,6 @@ fi
 
 while [[ $? == 0 ]]; do
 	time=$(stamp)
-	echo "${log_message/\{\{time\}\}/$time}"
+	echo "${log_message/\{\{time\}\}/$time}" | tee -a "$LOG_FILE"
 	sleep "$sleep_time"
 done

@@ -10,6 +10,8 @@ docker run -it johnstarich/noisy 3.14
 # or
 docker run -it johnstarich/noisy 42 '{{time}} Hello world!'
 # where {{time}} is replaced with the current time stamp
+# or mount the log file for use in another app
+docker run -it -v /path/to/local.log:/var/log/noisy.log johnstarich/noisy
 ```
 
 Usage: `noisy SLEEP_TIME [LOG_MESSAGE]`
