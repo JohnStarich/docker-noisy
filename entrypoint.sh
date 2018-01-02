@@ -40,6 +40,6 @@ fi
 
 while [[ $? == 0 ]]; do
 	time=$(stamp)
-	echo "${log_message/\{\{time\}\}/$time}" | tee -a "$LOG_FILE"
+	echo "${log_message//\{\{time\}\}/$time}" | tee -a "$LOG_FILE"
 	sleep "$sleep_time"
 done
