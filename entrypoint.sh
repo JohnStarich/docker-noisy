@@ -38,8 +38,19 @@ if [[ ! "$sleep_time" =~ ^[0-9]+(\.[0-9]*)?$ ]]; then
 	exit 2
 fi
 
-while [[ $? == 0 ]]; do
-	time=$(stamp)
-	echo "${log_message//\{\{time\}\}/$time}" | tee -a "$LOG_FILE"
-	sleep "$sleep_time"
-done
+if [[ "$log_message" == *'{{time}}'* ]]; then
+    while [[ $? == 0 ]]; do
+        time=$(stamp)
+        message="${log_message//\{\{time\}\}/$time}"
+        echo "$message"
+        echo "$message" >> "$LOG_FILE"
+        sleep "$sleep_time"
+    done
+else
+    true  # prevent failing if condition from early exit
+    while [[ $? == 0 ]]; do
+        echo "$log_message"
+        echo "$log_message" >> "$LOG_FILE"
+        sleep "$sleep_time"
+    done
+fi
