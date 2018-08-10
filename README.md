@@ -1,5 +1,7 @@
 # noisy
-Noisy prints out a lot
+Noisy just prints log messages.
+
+Useful for testing log throughput or general connectivity for log-related services.
 
 ## Print stuff
 
