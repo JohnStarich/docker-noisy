@@ -18,10 +18,26 @@ function stamp() {
 	date "+$TIME_FORMAT"
 }
 
+function fast_sleep() {
+    [[ "$1" != 0 ]] && sleep "$1"
+}
+
 sleep_time=${1:-5}
 log_message=${@:2}
 LOG_FILE=${LOG_FILE:-/var/log/noisy.log}
 TIME_FORMAT=${TIME_FORMAT:-%Y-%m-%dT%H:%M:%S.%NZ}
+
+# Optimize for lowest latency when not logging to a file
+if [[ "$LOG_FILE" != /dev/null ]]; then
+    function log() {
+        echo "$*"
+        echo "$*" >> "$LOG_FILE"
+    }
+else
+    function log() {
+        echo "$*"
+    }
+fi
 
 if [[ -z "$log_message" ]]; then
 	log_message='{"time": "{{time}}", "key": "value", "number": 123.456, "bool": true}'
@@ -33,24 +49,22 @@ if [[ -z "$sleep_time" || -z "$log_message" ]]; then
 fi
 
 if [[ ! "$sleep_time" =~ ^[0-9]+(\.[0-9]*)?$ ]]; then
-	error "Sleep time must be an integer: $sleep_time"
+	error "Sleep time must be a non-negative number: $sleep_time"
 	usage
 	exit 2
 fi
 
+trap 'exit 0' SIGTERM SIGINT
+
 if [[ "$log_message" == *'{{time}}'* ]]; then
-    while [[ $? == 0 ]]; do
+    while :; do
         time=$(stamp)
-        message="${log_message//\{\{time\}\}/$time}"
-        echo "$message"
-        echo "$message" >> "$LOG_FILE"
-        sleep "$sleep_time"
+        log "${log_message//\{\{time\}\}/$time}"
+        fast_sleep "$sleep_time"
     done
 else
-    true  # prevent failing if condition from early exit
-    while [[ $? == 0 ]]; do
-        echo "$log_message"
-        echo "$log_message" >> "$LOG_FILE"
-        sleep "$sleep_time"
+    while :; do
+        log "$log_message"
+        fast_sleep "$sleep_time"
     done
 fi
